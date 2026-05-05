@@ -3,6 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import morgan from 'morgan'
 import helmet from 'helmet'
+import cookieParser from 'cookie-parser'
 
 import indexRoutes from './routes/index.routes.js'
 
@@ -13,6 +14,8 @@ const app = express()
 
 app.use(express.json())
 app.use(helmet())
+
+app.use(cookieParser())
 app.use(morgan("dev"))
 
 

@@ -1,5 +1,5 @@
-import React from 'react'
 import { useForm } from 'react-hook-form'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/auth/useAuth'
 
 const Login = () => {
@@ -36,10 +36,10 @@ const Login = () => {
                     <button type='submit' className='bg-black text-white  rounded-xl px-8 my-2 py-2'>Login</button>
 
 
-                    <p className='text-xs text-black text-center'>Already have an account? Please {" "}
-                        <a className='text-blue-600 ' href="">Click here</a>
+                    <p className='text-xs text-black text-center'>Do not have an account? Please {" "}
+                        <Link className='text-blue-600 ' to="/register">Click here</Link>
                         <br />
-                        To login
+                        To register
                     </p>
                 </div>
             </form>

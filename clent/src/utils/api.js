@@ -10,19 +10,38 @@ const api = axios.create({
     withCredentials: true
 })
 
+api.interceptors.response.use(
+    (response) => {
+
+        console.log(response, "axios response")
+        return response
+    },
+    async (error) => {
+        console.log(error, "axios error object")
+        const originalReq = error.config
+        console.log(originalReq, "original req instance")
+
+        if (error.response?.status === 401 && !originalReq._retry) {
+            originalReq._retry = true
 
 
-api.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem("accessToken");
+            try {
+                console.log("inside the if condition 401 try")
+                await api.post("/auth/refresh")
+                return api(originalReq)
 
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+            } catch (refreshError) {
+                const isGuestPage = ["/login", "/register"].includes(window.location.pathname)
+                if (!isGuestPage) {
+                    window.location.href = "/login";
+                }
+                return Promise.reject(refreshError);
+            }
         }
 
-        return config;
-    },
-    (error) => Promise.reject(error)
+        return Promise.reject(error)
+
+    }
 )
 
 export default api

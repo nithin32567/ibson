@@ -14,3 +14,9 @@ export const generateRefreshToken = (payload) => {
     })
     return refreshToken
 }
+
+
+export const decodeAccessToken = async (token) => {
+    const decoded = jwt.verify(token, accessSecret)
+    return decoded
+}

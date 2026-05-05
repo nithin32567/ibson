@@ -1,15 +1,13 @@
-import React from 'react'
 import { useForm } from 'react-hook-form'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/auth/useAuth'
 
 
 
 const Register = () => {
-    const { register, handleSubmit, watch, formState: { errors } } = useForm()
+    const { register, handleSubmit, getValues, formState: { errors } } = useForm()
     const { registerUser } = useAuth()
 
-
-    const password = watch("password")
 
     const onSubmit = async (data) => {
         console.log("clicked")
@@ -43,7 +41,7 @@ const Register = () => {
 
                     <input autoComplete="off"   {...register("confirmPassword", {
                         required: "Confirm your password", validate: (value) => {
-                            return value === password || "Password do not match"
+                            return value === getValues("password") || "Password do not match"
                         }
                     })}
                         type="password" placeholder='Confirm Password' />
@@ -54,7 +52,7 @@ const Register = () => {
 
 
                     <p className='text-xs text-black text-center'>Already have an account? Please {" "}
-                        <a className='text-blue-600 ' href="">Click here</a>
+                        <Link className='text-blue-600 ' to="/login">Click here</Link>
                         <br />
                         To login
                     </p>

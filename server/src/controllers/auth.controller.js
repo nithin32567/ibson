@@ -1,6 +1,6 @@
 import { sendError, sendSuccess } from '../utils/apiResponses.js'
 import { hashPassword, verifyPassword } from '../utils/hashPassword.js'
-import { generateAccessToken, generateRefreshToken } from '../utils/jwt.js'
+import { decodeAccessToken, generateAccessToken, generateRefreshToken } from '../utils/jwt.js'
 
 import User from './../models/User.model.js'
 export const registerUser = async (req, res) => {
@@ -70,6 +70,13 @@ export const login = async (req, res) => {
             maxAge: 30 * 24 * 60 * 60 * 1000
         })
 
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production" ? true : false,
+            sameSite: "strict",
+            maxAge: 15 * 60 * 1000
+        })
+
         const userResponse = existingUser.toObject()
         delete userResponse.password
         delete userResponse.refreshToken
@@ -77,7 +84,6 @@ export const login = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: "user logged in successfully",
-            accessToken,
             user: userResponse
         })
 
@@ -106,5 +112,31 @@ export const logout = async (req, res) => {
     } catch (error) {
         console.log(error)
         sendError(res, 500, "logout failed")
+    }
+}
+
+
+export const getMe = async (req, res) => {
+    try {
+        const token = req.cookies.accessToken
+        if (!token) {
+            return sendError(res, 401, "Not authorized, token missing!!!")
+        }
+
+        const decoded = await decodeAccessToken(token)
+        const user = await User.findById(decoded.id)
+
+        if (!user) {
+            return sendError(res, 404, "User not found")
+        }
+
+        const userResponse = user.toObject()
+        delete userResponse.refreshToken
+
+        return sendSuccess(res, 200, "User found success", userResponse)
+
+    } catch (error) {
+        console.log(error)
+        return sendError(res, 500, "Internal server error")
     }
 }
