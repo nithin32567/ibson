@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+input {
+    max-width: 300px;
+    outline: none;
+    border: 1px solid gray;
+    margin: 1rem;
+    padding: 4px;
+    border-radius: 10px;
+
+}

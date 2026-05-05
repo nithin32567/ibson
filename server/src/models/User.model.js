@@ -36,7 +36,7 @@ const addressSchema = new mongoose.Schema({
 })
 
 
-const User = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "Name is required"],
@@ -64,6 +64,10 @@ const User = new mongoose.Schema({
         select: false, /*dont send in queries*/
 
     },
+    refreshToken: {
+        type: String,
+        default: null
+    },
 
     age: {
         type: Number,
@@ -76,3 +80,10 @@ const User = new mongoose.Schema({
         required: false
     }
 }, { timestamps: true })
+
+
+
+const User = mongoose.model("User", userSchema)
+
+
+export default User
