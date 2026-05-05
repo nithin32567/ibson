@@ -1,15 +1,15 @@
 import jwt from 'jsonwebtoken'
 const accessSecret = process.env.ACCESS_SECRET || "RANDOM SECRET"
-const refreshSecret = process.env.REFRESH_SECRET
-export const generateAccessToken = async (userid) => {
-    const accessToken = jwt.sign(userid, accessSecret, {
+const refreshSecret = process.env.REFRESH_SECRET || "RANDOM REFRESH SECRET"
+export const generateAccessToken = (payload) => {
+    const accessToken = jwt.sign(payload, accessSecret, {
         expiresIn: "15m"
     })
     return accessToken
 }
 
-export const generateRefreshToken = (userId) => {
-    const refreshToken = jwt.sign(userId, refreshSecret, {
+export const generateRefreshToken = (payload) => {
+    const refreshToken = jwt.sign(payload, refreshSecret, {
         expiresIn: "30d"
     })
     return refreshToken
